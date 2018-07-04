@@ -24,6 +24,8 @@ Main deferreds functions used in autonomie
 
 The widgets provided here are model agnostic
 """
+import copy
+
 import colander
 import datetime
 import deform
@@ -845,7 +847,7 @@ def customize_field(schema, field_name, widget=None, validator=None, **kw):
 
 def reorder_schema(schema, child_order):
     """
-    reorder a schema folowwing the child_order
+    reorder a schema folowing the child_order
 
     :param obj schema: The colander schema :class:`colander.Schema`
     :param tuple child_order: The children order
@@ -854,3 +856,44 @@ def reorder_schema(schema, child_order):
     """
     schema.children = [schema[node_name] for node_name in child_order]
     return schema
+
+
+def mk_choice_node(base_node_factory, title, **parent_kw):
+    """
+    A schema node factory for choosing an item within a list
+
+    :param function base_node_factory: a base node factory
+    :param title str: the name of the resource to be selected
+      (used in widget strings)
+    """
+    def choice_node(**kw):
+        for k, v in parent_kw.items():
+            kw.setdefault(k, v)
+        return base_node_factory(
+            title=kw.pop('title', title),
+            widget_options={
+                'placeholder': u"- Sélectionner {} -".format(title),
+                'default': ('', ''),  # required by placeholder
+            },
+            **kw
+        )
+    return choice_node
+
+
+def mk_filter_node(base_node_factory, empty_filter_msg, **parent_kw):
+    """
+    A schema node factory for filtering by an item.
+
+    :param function base_node_factory: a base node factory
+    :param empty_filter_msg str: the name of the list item for "no filter"
+      (used in widget strings)
+    """
+    def filter_node(**kw):
+        for k, v in parent_kw.items():
+            kw.setdefault(k, v)
+        return base_node_factory(
+            missing=colander.drop,
+            widget_options={'default_option': ('', empty_filter_msg)},
+            **kw
+        )
+    return filter_node

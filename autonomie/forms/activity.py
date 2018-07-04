@@ -38,7 +38,7 @@ from autonomie.models.activity import (
     ATTENDANCE_STATUS_SEARCH,
 )
 from autonomie.forms.user import user_node
-from autonomie.forms.company import company_node
+from autonomie.forms.company import company_choice_node
 from autonomie.models.task.invoice import get_invoice_years
 
 from autonomie import forms
@@ -112,28 +112,48 @@ def deferred_mode_validator(node, kw):
     return colander.OneOf(values)
 
 
+participant_choice_node = forms.mk_choice_node(
+    user_node,
+    title=u"un participant",
+)
+
+conseiller_choice_node = forms.mk_choice_node(
+    user_node,
+    title=u"un conseiller",
+    roles=['manager', 'admin'],
+)
+
+participant_filter_node = forms.mk_filter_node(
+    user_node,
+    empty_filter_msg='Tous les participants',
+)
+
+conseiller_filter_node = forms.mk_filter_node(
+    user_node,
+    empty_filter_msg='Tous les conseillers',
+    roles=['manager', 'admin'],
+)
+
+
 class ParticipantsSequence(colander.SequenceSchema):
     """
     Schema for the list of participants
     """
-    participant_id = user_node(title=u"un participant", )
+    participant_id = participant_choice_node()
 
 
 class ConseillerSequence(colander.SequenceSchema):
     """
     Schema for the list of conseiller
     """
-    conseiller_id = user_node(
-        title=u"un conseiller",
-        roles=['manager', 'admin'],
-    )
+    conseiller_id = conseiller_choice_node()
 
 
 class CompanySequence(colander.SequenceSchema):
     """
     schema for the list of attached companies
     """
-    company_id = company_node(title=u"une entreprise")
+    company_id = company_choice_node()
 
 
 class CreateActivitySchema(colander.MappingSchema):
@@ -317,24 +337,8 @@ def get_list_schema(is_admin=False):
         missing=colander.drop))
 
     if is_admin:
-        schema.insert(0, user_node(
-            missing=colander.drop,
-            name='participant_id',
-            widget_options={
-                'default_option': ("", u"- Sélectionner un participant -"),
-            }
-            )
-        )
-
-        schema.insert(0, user_node(
-            roles=['manager', 'admin'],
-            missing=colander.drop,
-            name='conseiller_id',
-            widget_options={
-                'default_option': ("", u"- Sélectionner un conseiller -"),
-            }
-            )
-        )
+        schema.insert(0, participant_filter_node(name='participant_id'))
+        schema.insert(0, conseiller_filter_node(name='conseiller_id'))
 
     year = forms.year_select_node(
         name='year',

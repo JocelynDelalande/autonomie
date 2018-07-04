@@ -56,7 +56,7 @@ from autonomie.utils.strings import format_amount
 from autonomie import forms
 from autonomie.forms.company import (
     customer_node,
-    company_node,
+    company_filter_node,
 )
 from autonomie.forms.custom_types import (
     AmountType,
@@ -283,10 +283,8 @@ def get_list_schema(is_global=False, excludes=()):
     if 'company_id' not in excludes:
         schema.insert(
             0,
-            company_node(
+            company_filter_node(
                 name='company_id',
-                missing=colander.drop,
-                widget_options={'default': ('', u'Toutes les entreprises')},
             )
         )
 

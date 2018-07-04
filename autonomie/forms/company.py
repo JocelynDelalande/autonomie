@@ -241,7 +241,6 @@ def get_deferred_company_choices(widget_options):
             values.insert(0, default_entry)
         return deform.widget.Select2Widget(
             values=values,
-            placeholder=u"Sélectionner une entreprise",
             **widget_options
             )
     return deferred_company_choices
@@ -257,6 +256,17 @@ def company_node(**kw):
         widget=get_deferred_company_choices(widget_options),
         **kw
     )
+
+
+company_choice_node = forms.mk_choice_node(
+    company_node,
+    title=u'une entreprise'
+)
+
+company_filter_node = forms.mk_filter_node(
+    company_node,
+    empty_filter_msg=u'Toutes les enterprises',
+)
 
 
 # Customer node related tools

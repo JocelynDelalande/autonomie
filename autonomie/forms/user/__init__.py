@@ -73,6 +73,8 @@ def get_deferred_user_choice(roles=None, widget_options=None):
         choices = get_users_options(roles)
         if default_option:
             choices.insert(0, default_option)
+        else:
+            choices.insert(0, ('', ''))
         return deform.widget.Select2Widget(
             values=choices,
             widget='select2.pt',
