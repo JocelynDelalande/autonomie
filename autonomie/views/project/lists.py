@@ -70,7 +70,7 @@ class ProjectListView(BaseListView, TreeMixin):
     def url(self):
         if isinstance(self.context, Company):
             cid = self.context.id
-        if isinstance(self.context, Project):
+        elif isinstance(self.context, Project):
             cid = self.context.company_id
         elif hasattr(self.context, 'project'):
             cid = self.context.project.company_id
