@@ -1,6 +1,7 @@
 import string
 
 from autonomie_base.models.base import DBSESSION
+from autonomie_base.utils.db import locked_tables
 from autonomie.models.task.sequence_number import (
     GlobalInvoiceSequence,
     MonthInvoiceSequence,
@@ -107,17 +108,27 @@ class InvoiceNumberService(object):
         formatter = InvoiceNumberFormatter(invoice, cls.SEQUENCES_MAP)
         invoice_number = formatter.format(template)
 
+        from autonomie.models.task import Task
+        from autonomie.models.node import Node
+
         involved_sequences = cls.get_involved_sequences(invoice, template)
-        # Create SequenceNumber objects (the index useages have not been
-        # booked until now).
-        for sequence, next_index in involved_sequences:
-            sn = SequenceNumber(
-                sequence=sequence.db_key,
-                index=next_index,
-                task_id=invoice.id,
-            )
-            db.add(sn)
-        db.flush()
-        invoice.official_number = invoice_number
-        db.merge(invoice)
+        with locked_tables(db, [
+                SequenceNumber.__tablename__,
+                invoice.__tablename__,
+                Task.__tablename__,
+                Node.__tablename__,
+            ]
+        ):
+            # Create SequenceNumber objects (the index useages have not been
+            # booked until now).
+            for sequence, next_index in involved_sequences:
+                sn = SequenceNumber(
+                    sequence=sequence.db_key,
+                    index=next_index,
+                    task_id=invoice.id,
+                )
+                db.add(sn)
+            invoice.official_number = invoice_number
+            db.merge(invoice)
+
         return invoice_number
