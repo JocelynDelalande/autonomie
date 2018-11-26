@@ -7335,7 +7335,8 @@ webpackJsonp([2],[
 	            product: this.getProductLabel(),
 	            tva_label: this.getTvaLabel(),
 	            is_not_first: order != min_order,
-	            is_not_last: order != max_order
+	            is_not_last: order != max_order,
+	            cost_amount: (0, _math.formatAmount)(this.model.get('cost'), false)
 	        };
 	    }
 	});
@@ -7358,9 +7359,10 @@ webpackJsonp([2],[
 	  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "<div class='col-md-3 col-sm-4 col-xs-12 description'>";
 	  stack1 = ((helper = (helper = helpers.description || (depth0 != null ? depth0.description : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"description","hash":{},"data":data}) : helper));
 	  if (stack1 != null) { buffer += stack1; }
+	  buffer += "</div>\n<div class='col-md-1 hidden-sm hidden-xs text-center'>";
+	  stack1 = ((helper = (helper = helpers.cost_amount || (depth0 != null ? depth0.cost_amount : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"cost_amount","hash":{},"data":data}) : helper));
+	  if (stack1 != null) { buffer += stack1; }
 	  buffer += "</div>\n<div class='col-md-1 hidden-sm hidden-xs text-center'>"
-	    + escapeExpression(((helper = (helper = helpers.cost || (depth0 != null ? depth0.cost : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"cost","hash":{},"data":data}) : helper)))
-	    + "</div>\n<div class='col-md-1 hidden-sm hidden-xs text-center'>"
 	    + escapeExpression(((helper = (helper = helpers.quantity || (depth0 != null ? depth0.quantity : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"quantity","hash":{},"data":data}) : helper)))
 	    + "</div>\n<div class='col-lg-1 hidden-sm hidden-xs hidden-md text-center'>"
 	    + escapeExpression(((helper = (helper = helpers.unity || (depth0 != null ? depth0.unity : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"unity","hash":{},"data":data}) : helper)))
@@ -10515,7 +10517,7 @@ webpackJsonp([2],[
 	            buttons: this.getOption('actions')['status'],
 	            ttc: (0, _math.formatAmount)(this.model.get('ttc'), true),
 	            ht: (0, _math.formatAmount)(this.model.get('ht', true)),
-	            ht_before: (0, _math.formatAmount)(this.model.get('ht_before_discounts'), false),
+	            ht_before: (0, _math.formatAmount)(this.model.get('ht_before_discounts'), true),
 	            tvas: this.model.tva_labels()
 	        };
 	    },
