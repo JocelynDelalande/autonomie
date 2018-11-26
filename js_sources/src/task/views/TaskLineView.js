@@ -10,7 +10,7 @@
  */
 import _ from 'underscore';
 import Mn from 'backbone.marionette';
-import { formatAmount } from '../../math.js';
+import { formatAmount, strToFloat } from '../../math.js';
 import Radio from 'backbone.radio';
 
 const template = require('./templates/TaskLineView.mustache');
@@ -68,7 +68,8 @@ const TaskLineView = Mn.View.extend({
             product: this.getProductLabel(),
             tva_label: this.getTvaLabel(),
             is_not_first: order != min_order,
-            is_not_last: order != max_order
+            is_not_last: order != max_order,
+            cost_amount: formatAmount(this.model.get('cost') , false),
         };
 
     }
