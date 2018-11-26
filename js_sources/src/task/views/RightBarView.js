@@ -36,7 +36,7 @@ const RightBarView = Mn.View.extend({
             buttons: this.getOption('actions')['status'],
             ttc: formatAmount(this.model.get('ttc'), true),
             ht: formatAmount(this.model.get('ht', true)),
-            ht_before: formatAmount(this.model.get('ht_before_discounts'), false),
+            ht_before: formatAmount(this.model.get('ht_before_discounts'), true),
             tvas: this.model.tva_labels(),
         }
     },
